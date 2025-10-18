@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Portfolio</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #333;
+      color: white;
+      padding: 1em;
+      text-align: center;
+    }
+    nav {
+      background-color: #444;
+      padding: 0.5em;
+      text-align: center;
+    }
+    nav a {
+      color: white;
+      margin: 0 1em;
+      text-decoration: none;
+    }
+    section {
+      padding: 2em;
+    }
+    img {
+      width: 200px;
+      height: auto;
+      margin: 1em;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      max-width: 400px;
+    }
+    input, textarea {
+      margin-bottom: 1em;
+      padding: 0.5em;
+      font-size: 1em;
+    }
+    button {
+      padding: 0.5em;
+      font-size: 1em;
+      background-color: #333;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1 id="welcome-message">Welcome!</h1>
+  </header>
+
+  <nav>
+    <a href="#about">About</a>
+    <a href="#projects">Projects</a>
+    <a href="#contact">Contact</a>
+  </nav>
+
+  <main>
+    <section id="about">
+      <h2>About Me</h2>
+      <p>Hello! I'm an IT professional that specializes  in systems engineering and Cyber Security. I am expanding my reach to AI, programming and data analytics.</p>
+    </section>
+
+    <section id="projects">
+      <h2>Projects</h2>
+      <p>Here are a few of my recent GitHub projects:</p>
+      <a href="https://github.com/Damien0483/SDC310L_Project" target="_blank">
+        <img src="https://artofvfx.com/wp-content/uploads/2019/04/SpiderMan_IntoSpiderVerse_Imageworks_NewYork_MOF.jpg" alt="Project 1" />
+      </a>
+      <a href="https://github.com/Damien0483/Database-Query-SDC250L" target="_blank">
+        <img src="https://artofvfx.com/wp-content/uploads/2018/06/SpiderMan_IntoSpiderVerse_trailer3.jpg" alt="Project 2" />
+      </a>
+      <a href="https://github.com/Damien0483/hello-world" target="_blank">
+        <img src="https://artofvfx.com/wp-content/uploads/2017/12/SpiderMan_IntoSpiderVerse_trailer2.jpg" alt="Project 3" />
+      </a>
+    </section>
+
+    <section id="contact">
+      <h2>Contact Me</h2>
+      <form>
+        <input type="text" name="name" placeholder="Your Name" required />
+        <input type="email" name="email" placeholder="Your Email Address" required />
+        <input type="text" name="subject" placeholder="Subject" required />
+        <textarea name="message" rows="5" placeholder="Your Message" required></textarea>
+        <button type="submit">Send Message</button>
+      </form>
+    </section>
+  </main>
+
+  <script>
+    const userName = prompt("What's your name?");
+    if (userName) {
+      document.getElementById("welcome-message").textContent = `Welcome, ${userName}!`;
+    }
+  </script>
+
+</body>
+</html>
+ 
