@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Portfolio</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #333;
+      color: white;
+      padding: 1em;
+      text-align: center;
+    }
+    nav {
+      background-color: #444;
+      padding: 0.5em;
+      text-align: center;
+    }
+    nav a {
+      color: white;
+      margin: 0 1em;
+      text-decoration: none;
+    }
+    section {
+      padding: 2em;
+    }
+    img {
+      width: 200px;
+      height: auto;
+      margin: 1em;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      max-width: 400px;
+    }
+    input, textarea {
+      margin-bottom: 1em;
+      padding: 0.5em;
+      font-size: 1em;
+    }
+    button {
+      padding: 0.5em;
+      font-size: 1em;
+      background-color: #333;
+      color: white;
+      border: none;
+      cursor: pointer;
+      margin-top: 1em;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1 id="welcome-message">Welcome!</h1>
+  </header>
+
+  <nav>
+    <a href="#about">About</a>
+    <a href="#projects">Projects</a>
+    <a href="#contact">Contact</a>
+  </nav>
+
+  <main>
+    <section id="about">
+      <h2>About Me</h2>
+      <p id="about-content">Hello! I'm an IT professional that specializes in systems engineering and Cyber Security. I am expanding my reach to AI, programming and data analytics.</p>
+      <button id="edit-about">Update About</button>
+    </section>
+
+    <section id="projects">
+      <h2>Projects</h2>
+      <p id="projects-content">Here are a few of my recent GitHub projects:</p>
+      <a href="https://github.com/Damien0483/SDC310L_Project" target="_blank">
+        <img src="https://artofvfx.com/wp-content/uploads/2019/04/SpiderMan_IntoSpiderVerse_Imageworks_NewYork_MOF.jpg" alt="Project 1" />
+      </a>
+      <a href="https://github.com/Damien0483/Database-Query-SDC250L" target="_blank">
+        <img src="https://artofvfx.com/wp-content/uploads/2018/06/SpiderMan_IntoSpiderVerse_trailer3.jpg" alt="Project 2" />
+      </a>
+      <a href="https://github.com/Damien0483/hello-world" target="_blank">
+        <img src="https://artofvfx.com/wp-content/uploads/2017/12/SpiderMan_IntoSpiderVerse_trailer2.jpg" alt="Project 3" />
+      </a>
+      <button id="edit-projects">Update Projects</button>
+    </section>
+
+    <section id="contact">
+      <h2>Contact Me</h2>
+      <form id="contact-form">
+        <input type="text" name="name" placeholder="Your Name" required />
+        <input type="email" name="email" placeholder="Your Email Address" required />
+        <input type="text" name="subject" placeholder="Subject" required />
+        <textarea name="message" rows="5" placeholder="Your Message" required></textarea>
+        <button type="submit">Send Message</button>
+      </form>
+      <button id="edit-contact">Update Contact Note</button>
+      <p id="contact-note">Feel free to reach out with any questions or collaboration ideas!</p>
+    </section>
+  </main>
+
+  <script>
+    // Personalized welcome
+    const userName = prompt("What's your name?");
+    if (userName) {
+      document.getElementById("welcome-message").textContent = `Welcome, ${userName}!`;
+    }
+
+    // Editable section logic
+    function enableEditing(buttonId, contentId) {
+      const button = document.getElementById(buttonId);
+      const content = document.getElementById(contentId);
+
+      button.addEventListener("click", () => {
+        const textarea = document.createElement("textarea");
+        textarea.value = content.textContent;
+        textarea.style.width = "100%";
+        textarea.style.height = "100px";
+        content.replaceWith(textarea);
+        button.textContent = "Save";
+
+        button.onclick = () => {
+          const newPara = document.createElement("p");
+          newPara.id = contentId;
+          newPara.textContent = textarea.value;
+          textarea.replaceWith(newPara);
+          button.textContent = "Update";
+          enableEditing(buttonId, contentId); //Had to look this up. Not sure if it is the most efficient way to bind
+        };
+      });
+    }
+
+    enableEditing("edit-about", "about-content");
+    enableEditing("edit-projects", "projects-content");
+    enableEditing("edit-contact", "contact-note");
+
+    // Notification after delay
+    setTimeout(() => {
+      const note = document.createElement("div");
+      note.textContent = "New project added!";
+      note.style.backgroundColor = "#fffae6";
+      note.style.padding = "10px";
+      note.style.textAlign = "center";
+      note.style.fontWeight = "bold";
+      document.body.insertBefore(note, document.body.firstChild);
+    }, 2000);
+
+    // Form submission confirmation
+    const form = document.getElementById("contact-form");
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      const loading = document.createElement("p");
+      loading.textContent = "Sending message...";
+      form.appendChild(loading);
+
+      setTimeout(() => {
+        loading.textContent = "Message sent successfully!";
+      }, 2500);
+    });
+  </script>
+
+</body>
+</html>
+
+
+
