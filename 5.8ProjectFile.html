@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Portfolio</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #333;
+      color: white;
+      padding: 1em;
+      text-align: center;
+    }
+
+    nav {
+      background-color: #444;
+      padding: 0.5em;
+      text-align: center;
+    }
+
+    nav a {
+      color: white;
+      margin: 0 1em;
+      text-decoration: none;
+    }
+
+    section {
+      padding: 2em;
+    }
+
+    img {
+      width: 200px;
+      height: auto;
+      margin: 1em;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      max-width: 400px;
+    }
+
+    input, textarea {
+      margin-bottom: 1em;
+      padding: 0.5em;
+      font-size: 1em;
+    }
+
+    button {
+      padding: 0.5em;
+      font-size: 1em;
+      background-color: #333;
+      color: white;
+      border: none;
+      cursor: pointer;
+      margin-top: 1em;
+    }
+
+    #welcome-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background-color: white;
+      padding: 2em;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    body.dark-mode {
+      background-color: #121212;
+      color: #f0f0f0;
+    }
+
+    body.dark-mode header,
+    body.dark-mode nav,
+    body.dark-mode button {
+      background-color: #222;
+      color: #f0f0f0;
+    }
+
+    body.dark-mode input,
+    body.dark-mode textarea {
+      background-color: #333;
+      color: #f0f0f0;
+      border: 1px solid #555;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="welcome-modal">
+    <div class="modal-content">
+      <p>This page is a work in progress.</p>
+      <button id="close-modal">Close</button>
+    </div>
+  </div>
+
+  <div style="text-align:center; margin: 1em;">
+    <label for="dark-toggle">Dark Mode</label>
+    <input type="checkbox" id="dark-toggle" />
+  </div>
+
+  <header>
+    <h1 id="welcome-message">Welcome!</h1>
+  </header>
+
+  <nav>
+    <a href="#about">About</a>
+    <a href="#projects">Projects</a>
+    <a href="#contact">Contact</a>
+  </nav>
+
+  <main>
+    <section id="about">
+      <h2>About Me</h2>
+      <p id="about-content">Hello! I'm an IT professional that specializes in systems engineering and Cyber Security. I am expanding my reach to AI, programming and data analytics.</p>
+      <button id="edit-about">Update About</button>
+    </section>
+
+    <section id="projects">
+      <h2>Projects</h2>
+      <p id="projects-content">Here are a few of my recent GitHub projects:</p>
+      <button id="edit-projects">Update Projects</button>
+    </section>
+
+    <section id="contact">
+      <h2>Contact Me</h2>
+      <form id="contact-form">
+        <input type="text" name="name" placeholder="Your Name" required />
+        <input type="email" name="email" placeholder="Your Email Address" required />
+        <input type="text" name="subject" placeholder="Subject" required />
+        <textarea name="message" rows="5" placeholder="Your Message" required></textarea>
+        <button type="submit" title="Click to send your message!">Send Message</button>
+      </form>
+      <button id="edit-contact">Update Contact Note</button>
+      <p id="contact-note">Feel free to reach out with any questions or collaboration ideas!</p>
+    </section>
+  </main>
+
+  <script>
+    window.addEventListener("DOMContentLoaded", () => {
+/*============================================================================
+Name:          loadSavedContent
+Parameters:    contentId (string)
+Return:        none
+Description:   Retrieves saved content from localStorage using the provided 
+               contentId. If content exists and the corresponding DOM element 
+               is found, it updates the element's textContent with the stored 
+               value.
+============================================================================*/
+      function loadSavedContent(contentId) {
+        const saved = localStorage.getItem(contentId);
+        if (saved) {
+          const content = document.getElementById(contentId);
+          if (content) {
+            content.textContent = saved;
+          }
+        }
+      }
+/*============================================================================
+Name:          enableEditing
+Parameters:    buttonId (string), contentId (string)
+Return:        none
+Description:   Enables in-place editing of a content element. When the button 
+               is clicked, it replaces the content with a textarea for editing.
+               Upon saving, it updates the content, stores it in localStorage,
+               and restores the original view with updated text.
+============================================================================*/
+      function enableEditing(buttonId, contentId) {
+        const button = document.getElementById(buttonId);
+        const content = document.getElementById(contentId);
+        if (!button || !content) return;
+
+        loadSavedContent(contentId);
+
+        button.addEventListener("click", () => {
+          const textarea = document.createElement("textarea");
+          textarea.value = content.textContent;
+          textarea.style.width = "100%";
+          textarea.style.height = "100px";
+          content.replaceWith(textarea);
+          button.textContent = "Save";
+
+          button.onclick = () => {
+            const newPara = document.createElement("p");
+            newPara.id = contentId;
+            newPara.textContent = textarea.value;
+            localStorage.setItem(contentId, textarea.value);
+            textarea.replaceWith(newPara);
+            button.textContent = "Update";
+            enableEditing(buttonId, contentId);
+          };
+        });
+      }
+
+      enableEditing("edit-about", "about-content");
+      enableEditing("edit-projects", "projects-content");
+      enableEditing("edit-contact", "contact-note");
+
+      const applyDarkMode = (enabled) => {
+        document.body.classList.toggle("dark-mode", enabled);
+        darkToggle.checked = enabled;
+      };
+
+      const darkToggle = document.getElementById("dark-toggle");
+      darkToggle.addEventListener("change", () => {
+        const enabled = darkToggle.checked;
+        localStorage.setItem("darkMode", enabled);
+        applyDarkMode(enabled);
+      });
+
+      const projectsArray = [
+        {
+          title: "SDC310L Project",
+          summary: "A scalable system design project focusing on modular architecture and performance optimization.",
+          imageUrl: "https://artofvfx.com/wp-content/uploads/2019/04/SpiderMan_IntoSpiderVerse_Imageworks_NewYork_MOF.jpg",
+          repoLink: "https://github.com/Damien0483/SDC310L_Project"
+        },
+        {
+          title: "Database Query SDC250L",
+          summary: "Advanced SQL queries and database optimization techniques demonstrated through practical examples.",
+          imageUrl: "https://artofvfx.com/wp-content/uploads/2018/06/SpiderMan_IntoSpiderVerse_trailer3.jpg",
+          repoLink: "https://github.com/Damien0483/Database-Query-SDC250L"
+        },
+        {
+          title: "Hello World",
+          summary: "A beginner-friendly introduction to GitHub and version control using a simple Hello World project.",
+          imageUrl: "https://artofvfx.com/wp-content/uploads/2017/12/SpiderMan_IntoSpiderVerse_trailer2.jpg",
+          repoLink: "https://github.com/Damien0483/hello-world"
+        }
+      ];
+/*============================================================================
+Name:          storeProjects
+Parameters:    none
+Return:        none
+Description:   Checks if "projectData" exists in sessionStorage. If not, it 
+               serializes the global projectsArray and stores it under the 
+               "projectData" key in sessionStorage.
+============================================================================*/
+      function storeProjects() {
+        const stored = sessionStorage.getItem("projectData");
+        if (!stored) {
+          sessionStorage.setItem("projectData", JSON.stringify(projectsArray));
+        }
+      }
+/*============================================================================
+Name:          renderProjects
+Parameters:    none
+Return:        none
+Description:   Retrieves project data from sessionStorage and dynamically 
+               renders each project into the DOM. 
+============================================================================*/
+      function renderProjects() {
+        const projectSection = document.getElementById("projects");
+        const oldLinks = projectSection.querySelectorAll("a, h3, p");
+        oldLinks.forEach(link => link.remove());
+
+        const storedProjects = sessionStorage.getItem("projectData");
+        if (!storedProjects) return;
+
+        const parsedProjects = JSON.parse(storedProjects);
+
+        parsedProjects.forEach(project => {
+          const title = document.createElement("h3");
+          title.textContent = project.title;
+
+          const summary = document.createElement("p");
+          summary.textContent = project.summary;
+
+          const link = document.createElement("a");
+          link.href = project.repoLink;
+          link.target = "_blank";
+
+          const image = document.createElement("img");
+          image.src = project.imageUrl;
+          image.alt = project.title;
+
+          link.appendChild(image);
+          projectSection.appendChild(title);
+          projectSection.appendChild(summary);
+          projectSection.appendChild(link);
+        });
+      }
+
+      const modal = document.getElementById("welcome-modal");
+      const closeBtn = document.getElementById("close-modal");
+      modal.style.display = "flex";
+      closeBtn.addEventListener("click", () => {
+        modal.style.display = "none";
+      });
+
+      const darkPref = localStorage.getItem("darkMode") === "true";
+      applyDarkMode(darkPref);
+
+      storeProjects();
+      renderProjects();
+
+      setTimeout(() => {
+        const note = document.createElement("div");
+        note.textContent = "New project added!";
+        note.style.backgroundColor = "#fffae6";
+        note.style.padding = "10px";
+        note.style.textAlign = "center";
+        note.style.fontWeight = "bold";
+        document.body.insertBefore(note, document.body.firstChild);
+    }, 2000);
+
+    const form = document.getElementById("contact-form");
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      const loading = document.createElement("p");
+      loading.textContent = "Sending message...";
+      form.appendChild(loading);
+
+      setTimeout(() => {
+        loading.textContent = "Message sent successfully!";
+      }, 2500);
+    });
+  });
+</script>
