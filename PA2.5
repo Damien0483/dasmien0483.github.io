@@ -1,0 +1,138 @@
+"""
+Author: [Your Name]
+Date: [Current Date]
+Assignment: MongoDB CRUD Application
+Purpose: This program demonstrates CRUD (Create, Read, Update, Delete) operations
+         on a MongoDB database using PyMongo. The application interacts with the
+         Amazon MongoDB database and performs operations on the ReviewData collection.
+"""
+
+from pymongo import MongoClient
+
+# * Connect to MongoDB (replace with your Amazon MongoDB connection string)
+client = MongoClient("mongodb+srv://<username>:<password>@<cluster-url>/test?retryWrites=true&w=majority")
+
+# * Access the database and collection
+db = client["AmazonDB"]
+collection = db["ReviewData"]
+
+# * Function to create a new document
+def create_review():
+    review = {
+        "review_id": input("Enter review_id: "),
+        "product_id": input("Enter product_id: "),
+        "reviewer_id": input("Enter reviewer_id: "),
+        "stars": int(input("Enter stars (1-5): ")),
+        "review_body": input("Enter review_body: "),
+        "review_title": input("Enter review_title: "),
+        "language": input("Enter language: "),
+        "product_category": input("Enter product_category: ")
+    }
+    result = collection.insert_one(review)
+    print(f"Review created with _id: {result.inserted_id}")
+
+# * Function to retrieve one document
+def read_one_review():
+    review_id = input("Enter review_id to find: ")
+    review = collection.find_one({"review_id": review_id})
+    print(review if review else "No review found.")
+
+# * Function to retrieve documents with advanced queries
+def read_reviews():
+    print("Filter options:")
+    print("1. Stars >= value")
+    print("2. Stars < value")
+    print("3. Title contains word")
+    print("4. Body contains word")
+    choice = input("Enter choice: ")
+
+    if choice == "1":
+        stars = int(input("Enter minimum stars: "))
+        results = collection.find({"stars": {"$gte": stars}})
+    elif choice == "2":
+        stars = int(input("Enter maximum stars: "))
+        results = collection.find({"stars": {"$lt": stars}})
+    elif choice == "3":
+        word = input("Enter word to search in title: ")
+        results = collection.find({"review_title": {"$regex": word, "$options": "i"}})
+    elif choice == "4":
+        word = input("Enter word to search in body: ")
+        results = collection.find({"review_body": {"$regex": word, "$options": "i"}})
+    else:
+        print("Invalid choice.")
+        return
+
+    for r in results:
+        print(r)
+
+# * Function to update a document
+def update_review():
+    review_id = input("Enter review_id to update: ")
+    field = input("Enter field to update: ")
+    value = input("Enter new value: ")
+
+    # Convert stars to integer if updating stars
+    if field == "stars":
+        value = int(value)
+
+    result = collection.update_one({"review_id": review_id}, {"$set": {field: value}})
+    print(f"Matched {result.matched_count}, Modified {result.modified_count}")
+
+# * Function to delete a specific document
+def delete_review():
+    review_id = input("Enter review_id to delete: ")
+    result = collection.delete_one({"review_id": review_id})
+    print(f"Deleted {result.deleted_count} document(s).")
+
+# * Function to remove all documents in the collection
+def clear_collection():
+    confirm = input("Are you sure you want to delete ALL documents? (yes/no): ")
+    if confirm.lower() == "yes":
+        result = collection.delete_many({})
+        print(f"Deleted {result.deleted_count} documents.")
+
+# * Function to delete the collection itself
+def drop_collection():
+    confirm = input("Are you sure you want to DROP the collection? (yes/no): ")
+    if confirm.lower() == "yes":
+        collection.drop()
+        print("Collection dropped.")
+
+# * Menu-driven interface
+def menu():
+    while True:
+        print("\n--- Amazon ReviewData CRUD Menu ---")
+        print("1. Create a new review")
+        print("2. Read one review")
+        print("3. Read reviews with filters")
+        print("4. Update a review")
+        print("5. Delete a review")
+        print("6. Clear all reviews")
+        print("7. Drop the collection")
+        print("8. Exit")
+
+        choice = input("Enter your choice: ")
+
+        if choice == "1":
+            create_review()
+        elif choice == "2":
+            read_one_review()
+        elif choice == "3":
+            read_reviews()
+        elif choice == "4":
+            update_review()
+        elif choice == "5":
+            delete_review()
+        elif choice == "6":
+            clear_collection()
+        elif choice == "7":
+            drop_collection()
+        elif choice == "8":
+            print("Exiting program.")
+            break
+        else:
+            print("Invalid choice. Please try again.")
+
+# * Run the program
+if __name__ == "__main__":
+    menu()
